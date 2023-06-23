@@ -1,0 +1,318 @@
+{
+	"info": {
+		"_postman_id": "706eeeac-d9c1-4178-bf10-cc988555913b",
+		"name": "EasyQL",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "CRUD",
+			"item": [
+				{
+					"name": "schema",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{HOST}}/easyql/crud/schema",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"easyql",
+								"crud",
+								"schema"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{HOST}}/easyql/crud?model=<model>",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"easyql",
+								"crud"
+							],
+							"query": [
+								{
+									"key": "model",
+									"value": "<model>"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"where\": [\r\n        [\"user_id\", 2],\r\n        [\"title\", \"like\", \"%demo%\"]\r\n    ],\r\n    \"with\": [\r\n        \"organizer:id,first_name,last_name\"\r\n    ],\r\n    \"select\": [\"title\", \"id\", \"address\", \"user_id\", \"description\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/easyql/crud/find?model=<model>",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"easyql",
+								"crud",
+								"find"
+							],
+							"query": [
+								{
+									"key": "model",
+									"value": "<model>"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get one",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"where\": [\r\n        [\"user_id\", 2],\r\n        [\"title\", \"like\", \"%demo%\"]\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/easyql/crud/<id>?model=booking",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"easyql",
+								"crud",
+								"<id>"
+							],
+							"query": [
+								{
+									"key": "model",
+									"value": "booking"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"data\": {\r\n       \"client_email\": \"this my tit\",\r\n       \"client_name\": \"this my desc\",\r\n       \"client_phone\": \"this@email.com\"\r\n   }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/easyql/crud?model=<model>",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"easyql",
+								"crud"
+							],
+							"query": [
+								{
+									"key": "model",
+									"value": "<model>"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"data\": {\r\n       \"title\": \"this my tit\",\r\n       \"description\": \"this my desc\"\r\n   }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/easyql/crud/<id>?model=<model>",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"easyql",
+								"crud",
+								"<id>"
+							],
+							"query": [
+								{
+									"key": "model",
+									"value": "<model>"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{HOST}}/easyql/crud/<id>?model=<model>",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"easyql",
+								"crud",
+								"<id>"
+							],
+							"query": [
+								{
+									"key": "model",
+									"value": "<model>"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{TOKEN}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "HOST",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "TOKEN",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
