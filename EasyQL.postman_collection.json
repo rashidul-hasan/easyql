@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "706eeeac-d9c1-4178-bf10-cc988555913b",
+		"_postman_id": "82041543-e426-49b1-b013-0d1e61112882",
 		"name": "EasyQL",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "594866"
 	},
 	"item": [
 		{
@@ -98,14 +99,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{HOST}}/easyql/crud/find?model=<model>",
+							"raw": "{{HOST}}/easyql/crud/find-where?model=<model>",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
 								"easyql",
 								"crud",
-								"find"
+								"find-where"
 							],
 							"query": [
 								{
