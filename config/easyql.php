@@ -2,5 +2,6 @@
 
 // config for rashidul/Easyql
 return [
-    'api_prefix' => 'easyql'
+    'api_prefix' => 'easyql',
+    'middleware' => []
 ];
