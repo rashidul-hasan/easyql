@@ -157,6 +157,7 @@ class CrudController
     public function findWhere(Request $request)
     {
         $model = $request->query('model');
+        $perPage = $request->query('per_page', 15);
 
         $where = $request->get('where');
         $with = $request->get('with');
@@ -186,6 +187,11 @@ class CrudController
             }
 
             $data = is_array($select) ? $q->get($select) : $q->get();
+            if ($request->has('page')) {
+                $data = is_array($select) ? $obj->paginate($perPage, $select) : $obj->paginate($perPage);
+            } else {
+                $data = is_array($select) ? $q->get($select) : $q->get();
+            }
         } catch (\Throwable $e) {
             return response()->json([
                 'success' => false,
@@ -193,15 +199,11 @@ class CrudController
             ], 400);
         }
 
-
         return response()->json([
             'success' => true,
             'message' => 'Success',
             'data' => $data
         ]);
-
-
-//        dd($model);
     }
 
     public function show(Request $request, $id)
