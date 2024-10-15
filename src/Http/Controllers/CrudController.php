@@ -133,24 +133,25 @@ class CrudController
     public function index(Request $request)
     {
         $model = $request->query('model');
+        $perPage = $request->query('per_page', 15);
 
-//        dd('here');
         try {
             $modelClass = 'App\\Models\\' . $model;
             $obj = new $modelClass;
+            if ($request->has('page')) {
+                $data = $obj->paginate($perPage);
+            } else {
+                $data = $obj->all();
+            }
         } catch (\Throwable $e) {
             dd($e->getMessage());
         }
 
-
         return response()->json([
             'success' => true,
             'message' => 'Success',
-            'data' => $obj->all()
+            'data' => $data
         ]);
-
-
-//        dd($model);
     }
 
     public function findWhere(Request $request)
