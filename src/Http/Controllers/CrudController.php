@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Rashidul\EasyQL\Util;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -189,9 +190,11 @@ class CrudController
             $modelClass = 'App\\Models\\' . $model;
             $obj = new $modelClass;
 
-            //if $payload is an array, we will create multiple entry
-            if(is_array($payload)) {
-                $data = $obj->insert($payload);
+            //if $payload has nested array, we will create multiple entry
+            if(Util::hasNestedArrays($payload)) {
+                foreach ($payload as $item) {
+                    $obj->create($item);
+                }
             } else {
                 $data = $obj->create($payload);
             }
