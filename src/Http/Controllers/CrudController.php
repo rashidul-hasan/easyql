@@ -18,15 +18,11 @@ class CrudController
         $models = [];
         $tables = [];
 
-        // Get all PHP files in the "app" directory
         $files = glob(app_path('Models/*.php'));
 
-//        dd($files);
         foreach ($files as $file) {
             $className = Str::ucfirst(Str::camel(basename($file, '.php')));
             $model = "App\\Models\\$className";
-
-//            echo $model;
 
             if (class_exists($model)) {
                 $modelObj = new $model;
@@ -42,8 +38,6 @@ class CrudController
             }
         }
 
-//        dd($models);
-
         // Fetch columns for each table
         foreach ($tables as $table) {
             $columns = Schema::getColumnListing($table);
@@ -54,50 +48,6 @@ class CrudController
                 return $model;
             }, $models);
         }
-
-        // Fetch relationships for each model
-        /*foreach ($models as $model => $info) {
-//            $methods = get_class_methods($model);
-
-//            dd($methods);
-            $relationships = [];
-
-            $relationships = [];
-
-            foreach((new ReflectionClass($model))->getMethods(ReflectionMethod::IS_PUBLIC) as $method)
-            {
-                if ($method->class != get_class($model) ||
-                    !empty($method->getParameters()) ||
-                    $method->getName() == __FUNCTION__) {
-                    continue;
-                }
-
-                try {
-                    $return = $method->invoke($model);
-
-                    if ($return instanceof Relation) {
-                        $relationships[$method->getName()] = [
-                            'type' => (new ReflectionClass($return))->getShortName(),
-                            'model' => (new ReflectionClass($return->getRelated()))->getName()
-                        ];
-                    }
-                } catch(ErrorException $e) {}
-            }
-            $models[$model]['relationships'] = $relationships;
-            /*foreach ($methods as $method) {
-                $reflector = new ReflectionMethod($model, $method);
-                $parameters = $reflector->getParameters();
-                foreach ($parameters as $parameter) {
-                    $class = $parameter->getClass();
-                    if ($class && is_subclass_of($class->getName(), 'Illuminate\Database\Eloquent\Relations\Relation')) {
-                        $relationships[] = $method;
-                    }
-                }
-            }
-            $models[$model]['relationships'] = $relationships;*/
-        /*}*/
-
-
 
         return $models;
     }
