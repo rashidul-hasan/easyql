@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "82041543-e426-49b1-b013-0d1e61112882",
+		"_postman_id": "cfa3aef5-05d3-4f86-ad58-f681b550ded4",
 		"name": "EasyQL",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "594866"
@@ -19,8 +19,7 @@
 						"header": [
 							{
 								"key": "Accept",
-								"value": "application/json",
-								"type": "default"
+								"value": "application/json"
 							}
 						],
 						"body": {
@@ -51,8 +50,7 @@
 						"header": [
 							{
 								"key": "Accept",
-								"value": "application/json",
-								"type": "default"
+								"value": "application/json"
 							}
 						],
 						"body": {
@@ -60,7 +58,7 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "{{HOST}}/easyql/crud?model=<model>",
+							"raw": "{{HOST}}/easyql/crud?model=Customer",
 							"host": [
 								"{{HOST}}"
 							],
@@ -71,7 +69,7 @@
 							"query": [
 								{
 									"key": "model",
-									"value": "<model>"
+									"value": "Customer"
 								}
 							]
 						}
@@ -85,8 +83,7 @@
 						"header": [
 							{
 								"key": "Accept",
-								"value": "application/json",
-								"type": "default"
+								"value": "application/json"
 							}
 						],
 						"body": {
@@ -128,8 +125,7 @@
 						"header": [
 							{
 								"key": "Accept",
-								"value": "application/json",
-								"type": "default"
+								"value": "application/json"
 							}
 						],
 						"body": {
@@ -168,13 +164,12 @@
 						"header": [
 							{
 								"key": "Accept",
-								"value": "application/json",
-								"type": "default"
+								"value": "application/json"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n   \"data\": {\r\n       \"client_email\": \"this my tit\",\r\n       \"client_name\": \"this my desc\",\r\n       \"client_phone\": \"this@email.com\"\r\n   }\r\n}",
+							"raw": "{\r\n   \"data\": {\r\n       \"email\": \"{{$randomEmail}}\",\r\n       \"name\": \"{{$randomFullName}}\",\r\n       \"password\": \"passsss\"\r\n   }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -182,7 +177,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{HOST}}/easyql/crud?model=<model>",
+							"raw": "{{HOST}}/easyql/crud?model=User",
 							"host": [
 								"{{HOST}}"
 							],
@@ -193,7 +188,45 @@
 							"query": [
 								{
 									"key": "model",
-									"value": "<model>"
+									"value": "User"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create multiple",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"data\": [\r\n        {\r\n            \"email\": \"{{$randomEmail}}\",\r\n            \"name\": \"{{$randomFullName}}\",\r\n            \"password\": \"passsss\"\r\n        },\r\n         {\r\n            \"email\": \"{{$randomEmail}}\",\r\n            \"name\": \"{{$randomFullName}}\",\r\n            \"password\": \"passsss\"\r\n        }\r\n   ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/easyql/crud?model=User",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"easyql",
+								"crud"
+							],
+							"query": [
+								{
+									"key": "model",
+									"value": "User"
 								}
 							]
 						}
@@ -207,8 +240,7 @@
 						"header": [
 							{
 								"key": "Accept",
-								"value": "application/json",
-								"type": "default"
+								"value": "application/json"
 							}
 						],
 						"body": {
@@ -247,8 +279,7 @@
 						"header": [
 							{
 								"key": "Accept",
-								"value": "application/json",
-								"type": "default"
+								"value": "application/json"
 							}
 						],
 						"url": {

@@ -220,29 +220,31 @@ class CrudController
             dd($e->getMessage());
         }
 
-
         return response()->json([
             'success' => true,
             'message' => 'Success',
             'data' => $data
         ]);
-
-
-//        dd($model);
     }
 
     public function store(Request $request)
     {
+        //TODO validate request
         $model = $request->query('model');
         $payload = $request->get('data');
         $data = null;
         try {
             $modelClass = 'App\\Models\\' . $model;
             $obj = new $modelClass;
-            $data = $obj->create($payload);
 
+            //if $payload is an array, we will create multiple entry
+            if(is_array($payload)) {
+                $data = $obj->insert($payload);
+            } else {
+                $data = $obj->create($payload);
+            }
         } catch (\Throwable $e) {
-            dd($e->getMessage());
+            dd($e->getMessage()); //TODO send proper error msg
         }
 
 
