@@ -58,7 +58,7 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "{{HOST}}/easyql/crud?model=Customer",
+							"raw": "{{HOST}}/easyql/crud?model=User&select=id,email,name&page=1&per_page=2",
 							"host": [
 								"{{HOST}}"
 							],
@@ -69,7 +69,19 @@
 							"query": [
 								{
 									"key": "model",
-									"value": "Customer"
+									"value": "User"
+								},
+								{
+									"key": "select",
+									"value": "id,email,name"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "2"
 								}
 							]
 						}

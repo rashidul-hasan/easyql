@@ -134,14 +134,16 @@ class CrudController
     {
         $model = $request->query('model');
         $perPage = $request->query('per_page', 15);
+        $select = $request->query('select', null);
+        $columnsToGet = $select ? explode(",", $select) : ['*'];
 
         try {
             $modelClass = 'App\\Models\\' . $model;
             $obj = new $modelClass;
             if ($request->has('page')) {
-                $data = $obj->paginate($perPage);
+                $data = $obj->paginate($perPage, $columnsToGet);
             } else {
-                $data = $obj->all();
+                $data = $obj->all($columnsToGet);
             }
         } catch (\Throwable $e) {
             dd($e->getMessage());
