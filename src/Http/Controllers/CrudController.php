@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Rashidul\EasyQL\Util;
 use ReflectionClass;
 use ReflectionMethod;
+use Illuminate\Database\Eloquent\Builder;
 
 class CrudController
 {
@@ -88,13 +89,21 @@ class CrudController
         $select = $request->query('select', null);
         $columnsToGet = $select ? explode(",", $select) : ['*'];
 
+        //filter
+        $filters = $request->query('filter', []);
+        $filterType = $request->query('filter_type', 'and');
+
+
         try {
             $modelClass = 'App\\Models\\' . $model;
             $obj = new $modelClass;
+            $q = $obj->query();
+            $q = $this->applyFilter($q, $filters, $filterType);
+
             if ($request->has('page')) {
-                $data = $obj->paginate($perPage, $columnsToGet);
+                $data = $q->paginate($perPage, $columnsToGet);
             } else {
-                $data = $obj->all($columnsToGet);
+                $data = $q->get($columnsToGet);
             }
         } catch (\Throwable $e) {
             dd($e->getMessage());
@@ -253,5 +262,42 @@ class CrudController
         ]);
     }
 
+    private function applyFilter(Builder $query, array $filters, $filterType = 'and')
+    {
+        // AND (default behavior):
+        // /customers?filter[name][like]=john&filter[email][like]=john
+
+        // OR: /customers?filter[name][like]=john&filter[email][like]=john&filter_type=or          
+        $operatorMapping = [
+            'eq' => '=',
+            'ne' => '!=',
+            'gt' => '>',
+            'lt' => '<',
+            'gte' => '>=',
+            'lte' => '<=',
+            'like' => 'LIKE',
+        ];
+
+        $method = strtolower($filterType) === 'or' ? 'orWhere' : 'where';
+
+        foreach ($filters as $column => $filter) {
+            foreach ($filter as $operator => $value) {
+                // Ignore the filter if the value is null or an empty string
+                if ($value === null || $value === '') {
+                    continue;
+                }
+
+                $sqlOperator = $operatorMapping[$operator] ?? '=';
+
+                if ($sqlOperator === 'LIKE') {
+                    $value = "%{$value}%";
+                }
+
+                $query->{$method}($column, $sqlOperator, $value);
+            }
+        }
+
+        return $query;
+    }
 
 }
