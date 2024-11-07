@@ -1,5 +1,10 @@
 # EasyQL - Poor man's graphql
 
+
+## Documentation
+
+[Click here](https://rashidul-hasan.github.io/easyql/) to see the full documentation.
+
 ## Installation
 
 You can install the package via composer:
