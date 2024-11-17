@@ -24,7 +24,7 @@ class CrudController
 
         foreach ($files as $file) {
             $className = Str::ucfirst(Str::camel(basename($file, '.php')));
-            $model = "App\\Models\\$className";
+            $model = "{$this->getModelNamespace()}\\$className";
 
             if (class_exists($model)) {
                 $modelObj = new $model;
@@ -95,7 +95,7 @@ class CrudController
 
 
         try {
-            $modelClass = 'App\\Models\\' . $model;
+            $modelClass = "{$this->getModelNamespace()}\\$model";
             $obj = new $modelClass;
             $q = $obj->query();
             $q = $this->applyFilter($q, $filters, $filterType);
@@ -127,7 +127,7 @@ class CrudController
 
         $data = null;
         try {
-            $modelClass = 'App\\Models\\' . $model;
+            $modelClass = "{$this->getModelNamespace()}\\$model";
             $obj = new $modelClass;
             $q = $obj->query();
             if (is_array($where)) {
@@ -171,7 +171,7 @@ class CrudController
 
         $data = null;
         try {
-            $modelClass = 'App\\Models\\' . $model;
+            $modelClass = "{$this->getModelNamespace()}\\$model";
             $obj = new $modelClass;
             $data = $obj->find($id);
 
@@ -193,7 +193,7 @@ class CrudController
         $payload = $request->get('data');
         $data = null;
         try {
-            $modelClass = 'App\\Models\\' . $model;
+            $modelClass = "{$this->getModelNamespace()}\\$model";
             $obj = new $modelClass;
 
             //if $payload has nested array, we will create multiple entry
@@ -222,7 +222,7 @@ class CrudController
         $payload = $request->get('data');
         $data = null;
         try {
-            $modelClass = 'App\\Models\\' . $model;
+            $modelClass = "{$this->getModelNamespace()}\\$model";
             $obj = new $modelClass;
             $data = $obj->whereId($id)->update($payload);
 
@@ -242,9 +242,9 @@ class CrudController
     {
         $model = $request->query('model');
         try {
-            $modelClass = 'App\\Models\\' . $model;
+            $modelClass = "{$this->getModelNamespace()}\\$model";
             $obj = new $modelClass;
-            $data = $obj->find($id);
+            $data = $obj->findOrFail($id);
             $data->delete();
 
         } catch (\Throwable $e) {
@@ -308,5 +308,10 @@ class CrudController
             'success' => false,
             'message' => 'Something went wrong'
         ], 500);
+    }
+
+    private function getModelNamespace()
+    {
+        return config('easyql.model_namespace');
     }
 }
