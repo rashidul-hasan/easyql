@@ -106,7 +106,7 @@ class CrudController
                 $data = $q->get($columnsToGet);
             }
         } catch (\Throwable $e) {
-            dd($e->getMessage());
+            return $this->returnErrorResponse($e);
         }
 
         return response()->json([
@@ -155,10 +155,7 @@ class CrudController
                 $data = is_array($select) ? $q->get($select) : $q->get();
             }
         } catch (\Throwable $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 400);
+            return $this->returnErrorResponse($e);
         }
 
         return response()->json([
@@ -179,7 +176,7 @@ class CrudController
             $data = $obj->find($id);
 
         } catch (\Throwable $e) {
-            dd($e->getMessage());
+            return $this->returnErrorResponse($e);
         }
 
         return response()->json([
@@ -208,7 +205,7 @@ class CrudController
                 $data = $obj->create($payload);
             }
         } catch (\Throwable $e) {
-            dd($e->getMessage()); //TODO send proper error msg
+            return $this->returnErrorResponse($e);
         }
 
 
@@ -230,7 +227,7 @@ class CrudController
             $data = $obj->whereId($id)->update($payload);
 
         } catch (\Throwable $e) {
-            dd($e->getMessage());
+            return $this->returnErrorResponse($e);
         }
 
 
@@ -251,7 +248,7 @@ class CrudController
             $data->delete();
 
         } catch (\Throwable $e) {
-            dd($e->getMessage());
+            return $this->returnErrorResponse($e);
         }
 
 
@@ -300,4 +297,16 @@ class CrudController
         return $query;
     }
 
+    private function returnErrorResponse($e)
+    {
+        if(config('app.debug')) {
+            //if debug mode then dump the full stack trace to make debugging easier
+            dd($e);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Something went wrong'
+        ], 500);
+    }
 }
