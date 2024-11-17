@@ -96,6 +96,8 @@ class CrudController
 
         try {
             $modelClass = "{$this->getModelNamespace()}\\$model";
+            $this->checkIfModelRestricted($modelClass);
+
             $obj = new $modelClass;
             $q = $obj->query();
             $q = $this->applyFilter($q, $filters, $filterType);
@@ -128,6 +130,8 @@ class CrudController
         $data = null;
         try {
             $modelClass = "{$this->getModelNamespace()}\\$model";
+            $this->checkIfModelRestricted($modelClass);
+
             $obj = new $modelClass;
             $q = $obj->query();
             if (is_array($where)) {
@@ -172,6 +176,8 @@ class CrudController
         $data = null;
         try {
             $modelClass = "{$this->getModelNamespace()}\\$model";
+            $this->checkIfModelRestricted($modelClass);
+
             $obj = new $modelClass;
             $data = $obj->find($id);
 
@@ -194,6 +200,8 @@ class CrudController
         $data = null;
         try {
             $modelClass = "{$this->getModelNamespace()}\\$model";
+            $this->checkIfModelRestricted($modelClass);
+
             $obj = new $modelClass;
 
             //if $payload has nested array, we will create multiple entry
@@ -223,6 +231,8 @@ class CrudController
         $data = null;
         try {
             $modelClass = "{$this->getModelNamespace()}\\$model";
+            $this->checkIfModelRestricted($modelClass);
+
             $obj = new $modelClass;
             $data = $obj->whereId($id)->update($payload);
 
@@ -243,6 +253,8 @@ class CrudController
         $model = $request->query('model');
         try {
             $modelClass = "{$this->getModelNamespace()}\\$model";
+            $this->checkIfModelRestricted($modelClass);
+            
             $obj = new $modelClass;
             $data = $obj->findOrFail($id);
             $data->delete();
@@ -313,5 +325,17 @@ class CrudController
     private function getModelNamespace()
     {
         return config('easyql.model_namespace');
+    }
+
+    private function checkIfModelRestricted($modelClass)
+    {
+        $restrictedClasses = config('easyql.restricted_classes');
+        $modelClassNormalized = strtolower($modelClass);
+        $restrictedClassesNormalized = array_map('strtolower', $restrictedClasses);
+
+        if (in_array($modelClassNormalized, $restrictedClassesNormalized)) {
+            // Step 4: Throw an exception or handle the restriction
+            throw new \Exception("The class {$modelClass} is restricted and cannot be instantiated.");
+        }
     }
 }

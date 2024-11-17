@@ -7,5 +7,10 @@ return [
     //base namespace for your model classes
     'model_namespace' => 'App\\Models',
 
-    'middleware' => []
+    'middleware' => [],
+
+    //do not perform CRUD operations on these models
+    'restricted_classes' => [
+        //'App\\Models\\User',
+    ]
 ];
