@@ -11,7 +11,8 @@ use Rashidul\EasyQL\Util;
 use ReflectionClass;
 use ReflectionMethod;
 use Illuminate\Database\Eloquent\Builder;
-use Rashidul\EasyQL\Services\SchemaService;
+use Rashidul\EasyQL\Http\Requests\CreateRequest;
+use Rashidul\EasyQL\Http\Requests\ListParamsRequest;
 
 class CrudController
 {
@@ -88,10 +89,8 @@ class CrudController
         return $relationships;
     }
 
-    public function index(Request $request)
+    public function index(ListParamsRequest $request)
     {
-        $schema = SchemaService::getSchema();
-        
         $model = $request->query('model');
         $perPage = $request->query('per_page', 15);
         $select = $request->query('select', null);
@@ -104,7 +103,6 @@ class CrudController
 
         try {
             $modelClass = "{$this->getModelNamespace()}\\$model";
-            $this->checkIfModelRestricted($modelClass);
 
             $obj = new $modelClass;
             $q = $obj->query();
@@ -138,7 +136,6 @@ class CrudController
         $data = null;
         try {
             $modelClass = "{$this->getModelNamespace()}\\$model";
-            $this->checkIfModelRestricted($modelClass);
 
             $obj = new $modelClass;
             $q = $obj->query();
@@ -184,7 +181,6 @@ class CrudController
         $data = null;
         try {
             $modelClass = "{$this->getModelNamespace()}\\$model";
-            $this->checkIfModelRestricted($modelClass);
 
             $obj = new $modelClass;
             $data = $obj->find($id);
@@ -200,7 +196,7 @@ class CrudController
         ]);
     }
 
-    public function store(Request $request)
+    public function store(CreateRequest $request)
     {
         //TODO validate request
         $model = $request->query('model');
@@ -208,7 +204,6 @@ class CrudController
         $data = null;
         try {
             $modelClass = "{$this->getModelNamespace()}\\$model";
-            $this->checkIfModelRestricted($modelClass);
 
             $obj = new $modelClass;
 
@@ -239,7 +234,6 @@ class CrudController
         $data = null;
         try {
             $modelClass = "{$this->getModelNamespace()}\\$model";
-            $this->checkIfModelRestricted($modelClass);
 
             $obj = new $modelClass;
             $data = $obj->whereId($id)->update($payload);
@@ -261,7 +255,6 @@ class CrudController
         $model = $request->query('model');
         try {
             $modelClass = "{$this->getModelNamespace()}\\$model";
-            $this->checkIfModelRestricted($modelClass);
             
             $obj = new $modelClass;
             $data = $obj->findOrFail($id);
@@ -321,7 +314,11 @@ class CrudController
     {
         if(config('app.debug')) {
             //if debug mode then dump the full stack trace to make debugging easier
-            dd($e);
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(), 
+            ], 500);
         }
 
         return response()->json([
@@ -333,17 +330,5 @@ class CrudController
     private function getModelNamespace()
     {
         return config('easyql.model_namespace');
-    }
-
-    private function checkIfModelRestricted($modelClass)
-    {
-        $restrictedClasses = config('easyql.restricted_classes');
-        $modelClassNormalized = strtolower($modelClass);
-        $restrictedClassesNormalized = array_map('strtolower', $restrictedClasses);
-
-        if (in_array($modelClassNormalized, $restrictedClassesNormalized)) {
-            // Step 4: Throw an exception or handle the restriction
-            throw new \Exception("The class {$modelClass} is restricted and cannot be instantiated.");
-        }
     }
 }

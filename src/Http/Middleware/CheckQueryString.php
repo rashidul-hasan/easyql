@@ -23,15 +23,13 @@ class CheckQueryString
 
         if($model) {
             $models = $schema['models'];
-            if(in_array($model, $models)) {
-                return $next($request);
+            if(!in_array($model, $models)) {
+                return response()->json([
+                    'error' => 'Access denied due to invalid query parameter.'
+                ], 403);
             }
         }
         
-
-        // If the query string does not match the condition, deny the request
-        return response()->json([
-            'error' => 'Access denied due to invalid query parameter.'
-        ], 403); // Return a 403 Forbidden status
+        return $next($request);
     }
 }
