@@ -10,7 +10,9 @@ return [
     'middleware' => [],
 
     //do not perform CRUD operations on these models
-    'restricted_classes' => [
-        //'App\\Models\\User',
-    ]
+    'restricted' => [
+        //'User',
+    ],
+
+    'model_path' => app_path('Models/*.php')
 ];

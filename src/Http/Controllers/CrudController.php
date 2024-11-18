@@ -11,16 +11,22 @@ use Rashidul\EasyQL\Util;
 use ReflectionClass;
 use ReflectionMethod;
 use Illuminate\Database\Eloquent\Builder;
+use Rashidul\EasyQL\Services\SchemaService;
 
 class CrudController
 {
 
     public function schema()
     {
+        if(!config('app.debug')) {
+            //disable this route on production environment
+            abort(404, "Not found");
+        }
+
         $models = [];
         $tables = [];
 
-        $files = glob(app_path('Models/*.php'));
+        $files = glob(config('easyql.model_path'));
 
         foreach ($files as $file) {
             $className = Str::ucfirst(Str::camel(basename($file, '.php')));
@@ -84,6 +90,8 @@ class CrudController
 
     public function index(Request $request)
     {
+        $schema = SchemaService::getSchema();
+        
         $model = $request->query('model');
         $perPage = $request->query('per_page', 15);
         $select = $request->query('select', null);

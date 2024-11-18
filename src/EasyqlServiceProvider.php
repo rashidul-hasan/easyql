@@ -3,12 +3,14 @@
 namespace Rashidul\EasyQL;
 
 use Illuminate\Support\ServiceProvider;
+use Rashidul\EasyQL\Http\Middleware\CheckQueryString;
 
 class EasyqlServiceProvider extends ServiceProvider
 {
     public function boot()
     {
 
+        $this->registerMiddleware();
         $this->configureRoutes();
 
         $this->publishes([
@@ -20,6 +22,12 @@ class EasyqlServiceProvider extends ServiceProvider
     private function configureRoutes(): void
     {
         $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+    }
+
+    protected function registerMiddleware()
+    {
+        // Register the middleware with Laravel
+        $this->app['router']->aliasMiddleware('easyql.check.query', CheckQueryString::class);
     }
 
 }
