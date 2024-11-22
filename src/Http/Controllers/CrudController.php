@@ -219,6 +219,7 @@ class CrudController
             return $this->returnErrorResponse($e);
         }
 
+        event("{$model}.stored", $data);
 
         return response()->json([
             'success' => true,
@@ -242,6 +243,7 @@ class CrudController
             return $this->returnErrorResponse($e);
         }
 
+        event("{$model}.updated", $data);
 
         return response()->json([
             'success' => true,
@@ -264,6 +266,7 @@ class CrudController
             return $this->returnErrorResponse($e);
         }
 
+        event("{$model}.destroyed", $data);
 
         return response()->json([
             'success' => true,
