@@ -252,11 +252,14 @@ class CrudController
         $model = $request->query('model');
         $payload = $request->get('data');
         $data = null;
+        $keysToExclude = ['_sync'];
+        $dataToInsert = array_diff_key($payload, array_flip($keysToExclude));
         try {
             $modelClass = "{$this->getModelNamespace()}\\$model";
 
-            $obj = new $modelClass;
-            $data = $obj->whereId($id)->update($payload);
+            $obj = $modelClass::findOrFail($id);
+            $data = $obj->fill($dataToInsert);
+            $obj->save();
 
             //sync many to many relations
             if(array_key_exists('_sync', $payload)) {
@@ -264,7 +267,6 @@ class CrudController
                     $obj->{$relation}()->sync($values);
                 }
             }
-
         } catch (\Throwable $e) {
             return $this->returnErrorResponse($e);
         }
