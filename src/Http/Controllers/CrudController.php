@@ -208,13 +208,32 @@ class CrudController
             $obj = new $modelClass;
 
             //if $payload has nested array, we will create multiple entry
-            if(Util::hasNestedArrays($payload)) {
+            if(Util::isBulkInsert($payload)) {
                 foreach ($payload as $item) {
-                    $obj->create($item);
+                    $obj = new $modelClass;
+                    $obj->fill($item);
+                    $obj->save();
+
+                    //sync many to many relations
+                    if(array_key_exists('_sync', $payload)) {
+                        foreach($payload['_sync'] as $relation => $values) {
+                            $obj->{$relation}()->sync($values);
+                        }
+                    }
                 }
             } else {
-                $data = $obj->create($payload);
+                $data = $obj->fill($payload);
+                $obj->save();
+
+                //sync many to many relations
+                if(array_key_exists('_sync', $payload)) {
+                    foreach($payload['_sync'] as $relation => $values) {
+                        $obj->{$relation}()->sync($values);
+                    }
+                }
             }
+
+            
         } catch (\Throwable $e) {
             return $this->returnErrorResponse($e);
         }
@@ -238,6 +257,13 @@ class CrudController
 
             $obj = new $modelClass;
             $data = $obj->whereId($id)->update($payload);
+
+            //sync many to many relations
+            if(array_key_exists('_sync', $payload)) {
+                foreach($payload['_sync'] as $relation => $values) {
+                    $obj->{$relation}()->sync($values);
+                }
+            }
 
         } catch (\Throwable $e) {
             return $this->returnErrorResponse($e);
