@@ -2,16 +2,13 @@
 
 namespace Rashidul\EasyQL\Services;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
-use ReflectionClass;
-use ReflectionMethod;
 use Illuminate\Support\Facades\Schema;
+use Rashidul\EasyQL\Util;
 
 class SchemaService
 {
-    const CACHE_FILENAME = 'easyql.php';
 
     public static function cacheSchema() {
         $files = glob(config('easyql.model_path'));
@@ -72,7 +69,7 @@ class SchemaService
         // dd($tables);
         $models = array_diff($models, $restricted_models);
 
-        self::createFileInCache(self::CACHE_FILENAME, [
+        self::createFileInCache(Util::CACHE_FILENAME, [
             'models' => $models,
             'schema' => $tables
         ]);
@@ -112,7 +109,7 @@ class SchemaService
 
     public static function getSchema() {
         // Define the path to the file inside the bootstrap/cache folder
-        $filePath = base_path('bootstrap/cache/' . self::CACHE_FILENAME);
+        $filePath = base_path('bootstrap/cache/' . Util::CACHE_FILENAME);
 
         // Check if the file exists
         if (file_exists($filePath)) {

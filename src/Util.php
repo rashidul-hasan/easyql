@@ -3,6 +3,9 @@
 namespace Rashidul\EasyQL;
 
 class Util {
+
+    const CACHE_FILENAME = 'easyql.php';
+    
     public static function hasNestedArrays(array $array): bool {
         // Check if the array contains nested arrays, to bulk insert
         foreach ($array as $item) {

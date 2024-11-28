@@ -3,6 +3,7 @@
 namespace Rashidul\EasyQL;
 
 use Illuminate\Support\ServiceProvider;
+use Rashidul\EasyQL\Commands\ClearSchemaCacheCommand;
 use Rashidul\EasyQL\Http\Middleware\CheckQueryString;
 
 class EasyqlServiceProvider extends ServiceProvider
@@ -16,6 +17,8 @@ class EasyqlServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/easyql.php' => config_path('easyql.php'),
         ], ['easyql-config']);
+
+        $this->configureCommands();
     }
 
 
@@ -30,4 +33,10 @@ class EasyqlServiceProvider extends ServiceProvider
         $this->app['router']->aliasMiddleware('easyql.check.query', CheckQueryString::class);
     }
 
+    private function configureCommands(): void
+    {
+        $this->commands([
+            ClearSchemaCacheCommand::class
+        ]);
+    }
 }
