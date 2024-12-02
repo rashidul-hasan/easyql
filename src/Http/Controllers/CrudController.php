@@ -6,11 +6,15 @@ use ErrorException;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Rashidul\EasyQL\Util;
 use ReflectionClass;
 use ReflectionMethod;
 use Illuminate\Database\Eloquent\Builder;
+use Rashidul\EasyQL\Events\ResourceCreatedEvent;
+use Rashidul\EasyQL\Events\ResourceDestroyedEvent;
+use Rashidul\EasyQL\Events\ResourceUpdatedEvent;
 use Rashidul\EasyQL\Http\Requests\CreateRequest;
 use Rashidul\EasyQL\Http\Requests\ListParamsRequest;
 
@@ -238,7 +242,7 @@ class CrudController
             return $this->returnErrorResponse($e);
         }
 
-        event("{$model}.stored", $data);
+        Event::dispatch(new ResourceCreatedEvent($model, $data));
 
         return response()->json([
             'success' => true,
@@ -271,7 +275,7 @@ class CrudController
             return $this->returnErrorResponse($e);
         }
 
-        event("{$model}.updated", $data);
+        Event::dispatch(new ResourceUpdatedEvent($model, $data));
 
         return response()->json([
             'success' => true,
@@ -294,7 +298,7 @@ class CrudController
             return $this->returnErrorResponse($e);
         }
 
-        event("{$model}.destroyed", $data);
+        Event::dispatch(new ResourceDestroyedEvent($model, $data));
 
         return response()->json([
             'success' => true,
