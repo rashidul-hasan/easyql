@@ -12,6 +12,7 @@ use Rashidul\EasyQL\Util;
 use ReflectionClass;
 use ReflectionMethod;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Gate;
 use Rashidul\EasyQL\Events\ResourceCreatedEvent;
 use Rashidul\EasyQL\Events\ResourceDestroyedEvent;
 use Rashidul\EasyQL\Events\ResourceUpdatedEvent;
@@ -96,6 +97,7 @@ class CrudController
     public function index(ListParamsRequest $request)
     {
         $model = $request->query('model');
+        $this->checkGate($model, 'index');
         $perPage = $request->query('per_page', 15);
         $select = $request->query('select', null);
         $columnsToGet = $select ? explode(",", $select) : ['*'];
@@ -181,7 +183,7 @@ class CrudController
     public function show(Request $request, $id)
     {
         $model = $request->query('model');
-
+        $this->checkGate($model, 'show');
         $data = null;
         try {
             $modelClass = "{$this->getModelNamespace()}\\$model";
@@ -204,6 +206,7 @@ class CrudController
     {
         //TODO validate request
         $model = $request->query('model');
+        $this->checkGate($model, 'store');
         $payload = $request->get('data');
         $data = null;
         try {
@@ -254,6 +257,7 @@ class CrudController
     public function update(Request $request, $id)
     {
         $model = $request->query('model');
+        $this->checkGate($model, 'update');
         $payload = $request->get('data');
         $data = null;
         $keysToExclude = ['_sync'];
@@ -287,6 +291,7 @@ class CrudController
     public function destroy(Request $request, $id)
     {
         $model = $request->query('model');
+        $this->checkGate($model, 'destroy');
         try {
             $modelClass = "{$this->getModelNamespace()}\\$model";
             
@@ -365,5 +370,13 @@ class CrudController
     private function getModelNamespace()
     {
         return config('easyql.model_namespace');
+    }
+    
+    private function checkGate($model, $action)
+    {
+        $gate = "{$model}.{$action}";
+        if(Gate::has($gate) && Gate::denies($gate)) {
+            abort(403);
+        }
     }
 }
