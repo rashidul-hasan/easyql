@@ -10,7 +10,7 @@
 You can install the package via composer:
 
 ```bash
-composer require rashidul/easyql
+composer require rashidul/easyql:dev-master
 ```
 
 You can publish the config file with:
